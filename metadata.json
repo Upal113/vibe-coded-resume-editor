@@ -1,0 +1,6 @@
+{
+  "name": "PushResume - ATS LaTeX Resume Builder & Analyzer",
+  "description": "Professional LaTeX-style ATS-optimized resume builder with real-time ATS scoring, job description keyword matching, and AI review.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
