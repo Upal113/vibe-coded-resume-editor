@@ -8,6 +8,8 @@ import {
   Sparkles,
   BookOpen,
   ChevronDown,
+  Download,
+  Loader2,
 } from 'lucide-react';
 import { ResumeTemplateId, AtsScoreResult, JdMatchResult } from '../types/resume';
 
@@ -21,6 +23,8 @@ interface NavbarProps {
   onOpenLatexModal: () => void;
   onOpenFeaturesModal: () => void;
   onPrint: () => void;
+  onDownloadPdf: () => void;
+  isExportingPdf?: boolean;
   onLoadSample: (type: 'swe' | 'aiml') => void;
   editorMode: 'split' | 'editor' | 'preview';
   onChangeEditorMode: (mode: 'split' | 'editor' | 'preview') => void;
@@ -36,6 +40,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenLatexModal,
   onOpenFeaturesModal,
   onPrint,
+  onDownloadPdf,
+  isExportingPdf = false,
   onLoadSample,
   editorMode,
   onChangeEditorMode,
@@ -118,14 +124,24 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="hidden lg:inline">LaTeX Source</span>
             </button>
 
-            {/* Print / PDF Download */}
+            {/* Direct PDF Download */}
             <button
-              onClick={onPrint}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-indigo-600 hover:bg-indigo-500 text-white shadow transition"
-              title="Print or Save as ATS PDF"
+              onClick={onDownloadPdf}
+              disabled={isExportingPdf}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 text-white shadow transition cursor-pointer"
+              title="Download ATS PDF file directly"
             >
-              <Printer className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Export PDF</span>
+              {isExportingPdf ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Generating PDF...</span>
+                </>
+              ) : (
+                <>
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Download PDF</span>
+                </>
+              )}
             </button>
 
             {/* Sample Loader Dropdown */}

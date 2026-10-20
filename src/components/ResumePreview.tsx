@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { ResumeData, ResumeTemplateId } from '../types/resume';
-import { ZoomIn, ZoomOut, RotateCcw, CheckCircle, ShieldCheck } from 'lucide-react';
+import { ZoomIn, ZoomOut, RotateCcw, ShieldCheck, Download, Loader2 } from 'lucide-react';
 
 interface ResumePreviewProps {
   resume: ResumeData;
   template: ResumeTemplateId;
+  onDownloadPdf?: () => void;
+  isExportingPdf?: boolean;
 }
 
-export const ResumePreview: React.FC<ResumePreviewProps> = ({ resume, template }) => {
+export const ResumePreview: React.FC<ResumePreviewProps> = ({
+  resume,
+  template,
+  onDownloadPdf,
+  isExportingPdf = false,
+}) => {
   const [zoom, setZoom] = useState(100);
 
   const getFontFamily = () => {
@@ -73,6 +80,27 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resume, template }
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
+
+          {onDownloadPdf && (
+            <button
+              onClick={onDownloadPdf}
+              disabled={isExportingPdf}
+              className="ml-2 flex items-center gap-1.5 px-3 py-1 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 text-white font-medium rounded shadow-sm text-xs transition cursor-pointer"
+              title="Download PDF directly to your computer"
+            >
+              {isExportingPdf ? (
+                <>
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  <span>Saving...</span>
+                </>
+              ) : (
+                <>
+                  <Download className="w-3 h-3" />
+                  <span>Download PDF</span>
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
 

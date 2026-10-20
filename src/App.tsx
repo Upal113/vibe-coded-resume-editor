@@ -18,6 +18,7 @@ import { calculateAtsScore } from './services/atsScorer';
 import { analyzeJobDescription } from './services/jdOptimizer';
 import { generateLatexCode } from './services/latexGenerator';
 import { sanitizeResume } from './services/resumeParser';
+import { exportResumeToPdf } from './services/pdfExporter';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Navbar } from './components/Navbar';
 import { ResumeEditor } from './components/ResumeEditor';
@@ -102,6 +103,23 @@ export default function App() {
     }
   };
 
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
+
+  const handleDownloadPdf = async () => {
+    setIsExportingPdf(true);
+    try {
+      await exportResumeToPdf({
+        elementId: 'resume-preview',
+        candidateName: resume.contact.fullName || 'Resume',
+      });
+    } catch (err) {
+      console.error('Direct PDF export error, falling back to print dialog:', err);
+      window.print();
+    } finally {
+      setIsExportingPdf(false);
+    }
+  };
+
   const handlePrint = () => {
     window.print();
   };
@@ -128,6 +146,8 @@ export default function App() {
           onOpenLatexModal={() => setIsLatexModalOpen(true)}
           onOpenFeaturesModal={() => setIsFeaturesModalOpen(true)}
           onPrint={handlePrint}
+          onDownloadPdf={handleDownloadPdf}
+          isExportingPdf={isExportingPdf}
           onLoadSample={handleLoadSample}
           editorMode={editorMode}
           onChangeEditorMode={setEditorMode}
@@ -189,7 +209,12 @@ export default function App() {
 
               {/* Right: Live LaTeX Preview */}
               <div className="lg:col-span-7 order-1 lg:order-2 sticky top-28">
-                <ResumePreview resume={resume} template={template} />
+                <ResumePreview
+                  resume={resume}
+                  template={template}
+                  onDownloadPdf={handleDownloadPdf}
+                  isExportingPdf={isExportingPdf}
+                />
               </div>
             </div>
           ) : editorMode === 'editor' ? (
@@ -224,7 +249,12 @@ export default function App() {
                   Back to Split View
                 </button>
               </div>
-              <ResumePreview resume={resume} template={template} />
+              <ResumePreview
+                resume={resume}
+                template={template}
+                onDownloadPdf={handleDownloadPdf}
+                isExportingPdf={isExportingPdf}
+              />
             </div>
           )}
         </main>
